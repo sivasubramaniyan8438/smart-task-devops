@@ -21,6 +21,7 @@ services:
       - PORT=5001
       - MONGO_URI=mongodb://mongodb:27017/authdb
       - JWT_SECRET=MySecret@123
+      - JWT_EXPIRES_IN=1d
     depends_on:
       - mongodb
     networks:
