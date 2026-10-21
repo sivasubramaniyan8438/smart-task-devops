@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: task-service
+  template:
+    metadata:
+      labels:
+        app: task-service
+    spec:
+      containers:
+        - name: task-service
+          image: {{ .Values.image.registry }}/stms-task-service:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 5002
+          env:
+            - name: PORT
+              value: "5002"
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/taskdb"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: smart-task-secret
+                  key: JWT_SECRET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: task-service
+  ports:
+    - port: 5002
+      targetPort: 5002

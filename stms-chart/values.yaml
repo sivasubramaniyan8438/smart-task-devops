@@ -1,0 +1,6 @@
+image:
+  registry: sivavenkatasubramaniyan
+  tag: v1
+replicaCount: 2
+frontend:
+  nodePort: 30091

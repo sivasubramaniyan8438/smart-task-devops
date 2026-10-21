@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: report-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: report-service
+  template:
+    metadata:
+      labels:
+        app: report-service
+    spec:
+      containers:
+        - name: report-service
+          image: {{ .Values.image.registry }}/stms-report-service:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 5004
+          env:
+            - name: PORT
+              value: "5004"
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/reportdb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: report-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: report-service
+  ports:
+    - port: 5004
+      targetPort: 5004
