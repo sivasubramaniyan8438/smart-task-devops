@@ -60,6 +60,22 @@ resource "aws_security_group" "tools" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = [local.my_ip]
+}
+  ingress {
+    description = "Jenkins from my IP"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = [local.my_ip]
+  
+  }
+
+  ingress {
+    description = "SonarQube from my IP"
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = [local.my_ip]
   }
 
   egress {
@@ -95,6 +111,9 @@ resource "aws_instance" "tools" {
   vpc_security_group_ids = [aws_security_group.tools.id]
   key_name               = aws_key_pair.stms.key_name
   user_data              = replace(file("${path.module}/user_data.sh"), "\r", "")
+  lifecycle {
+    ignore_changes = [ami, user_data]
+  }
 
   root_block_device {
     volume_size = 30

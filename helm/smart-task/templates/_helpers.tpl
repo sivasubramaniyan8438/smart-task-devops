@@ -1,1 +1,0 @@
-{{- define "smart-task.fullname" -}}{{ .Release.Name }}{{- end -}}
