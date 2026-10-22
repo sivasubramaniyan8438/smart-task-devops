@@ -1,0 +1,47 @@
+---
+# Source: stms-chart/templates/auth-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: smart-task
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - port: 5001
+      targetPort: 5001
+---
+# Source: stms-chart/templates/auth-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: smart-task
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: sivavenkatasubramaniyan/stms-auth-service:v1
+          ports:
+            - containerPort: 5001
+          env:
+            - name: PORT
+              value: "5001"
+            - name: MONGO_URI
+              value: "mongodb://mongodb:27017/authdb"
+            - name: JWT_EXPIRES_IN
+              value: "1d"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: smart-task-secret
+                  key: JWT_SECRET

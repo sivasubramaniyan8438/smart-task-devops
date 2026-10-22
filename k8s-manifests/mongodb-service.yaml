@@ -1,0 +1,13 @@
+---
+# Source: stms-chart/templates/mongodb-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: smart-task
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
